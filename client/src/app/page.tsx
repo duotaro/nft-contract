@@ -209,7 +209,7 @@ export default function Home() {
           </div>
         )}
       </div>
-      {loading && <LoadingModal />}
+      {currentAccount && loading && <LoadingModal />}
     </div>
   );
 }
