@@ -1,7 +1,11 @@
 # solidity-learning
 
-## メタマスク入手
-rabbyでもいい
+## DEMO
+[demo page](https://first-dapp-eosin.vercel.app/)
+
+## wallet 入手
+[metamask](https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn)でもいい
+[rabby](https://chrome.google.com/webstore/detail/acmacodkjbdgmoleebolmdjonilkdbch)でもいい
 
 ## sepolia ETH入手
 https://sepolia-faucet.pk910.de/?ref=hackernoon.com
@@ -34,6 +38,9 @@ http://localhost:3000/ にアクセスして表示されるか確認
 今回みたいにclientの中だけをdeployってできるんかな？
 
 ## 課題
+次回作でやりたいところ
+ウォレットがない人を誘導する
 できればチェーンを指定して接続したい。今のままだとデフォルトでメインネットに接続されてしまう
-
+チェーンが違う場合にどうするか
+ユーザーごとに取得する内容などを変更したい（今回は一つのコントラクトでBOXという変数に全ユーザーがアクセスしている）
 
