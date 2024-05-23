@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import React from 'react';
-
+import { StateContextProvider } from "@/app/provider/StateContextProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <main className="flex flex-col h-screen">
+        <StateContextProvider>{children}</StateContextProvider>
+        </main>
       </body>
     </html>
   );
