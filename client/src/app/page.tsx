@@ -1,7 +1,7 @@
 "use client";
 import { ethers } from "ethers";
 import React, { useState, useEffect } from "react";
-import { CONTRACT_ADDRESS, TOKEN_URI } from "../../constants"
+import { CONTRACT_ADDRESS, TOKEN_URI, TARGET_CHAIN_ID_LIST } from "../../constants"
 import abi from "@/lib/MyNFT.abi.json"
 import { useStateContext } from '@/app/provider/StateContextProvider';
 import { initState } from '@/app/provider/StateContextProvider'
@@ -22,6 +22,13 @@ export default function Home() {
   const contractABI = abi
 
   tmpState = state
+
+  async function switchNetwork(ethereum:any, chainId:number) {
+    await ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: chainId }],    // chainId must be in HEX with 0x in front
+    });
+ }
 
   const setBalance = (balance:number) => {
     tmpState = { ...tmpState, nftBalance: balance }
@@ -47,6 +54,11 @@ export default function Home() {
 
         const provider = new ethers.BrowserProvider(ethereum);
         const signer = await provider.getSigner();
+
+        const network = await provider.getNetwork();
+        if(!TARGET_CHAIN_ID_LIST.includes(Number(network.chainId))){
+          await switchNetwork(ethereum, TARGET_CHAIN_ID_LIST[0])
+        }
         // /* ABIを参照する */
         const ethEchoContract = new ethers.Contract(
           contractAddress,
@@ -64,6 +76,7 @@ export default function Home() {
       }
     }catch (error) {
       console.log(error);
+      setLoading(false)
     }
   }
 
@@ -82,6 +95,13 @@ export default function Home() {
 
         const provider = new ethers.BrowserProvider(ethereum);
         const signer = await provider.getSigner();
+
+        const network = await provider.getNetwork();
+        if(!TARGET_CHAIN_ID_LIST.includes(Number(network.chainId))){
+          await  switchNetwork(ethereum, TARGET_CHAIN_ID_LIST[0])
+        }
+
+
         /* ABIを参照する */
         const ethEchoContract = new ethers.Contract(
           contractAddress,
@@ -102,6 +122,7 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
+      setLoading(false)
     }
   };
 
