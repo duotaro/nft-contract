@@ -1,15 +1,13 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react';
 import Header from '@/app/components/Header';
-import { FB_CONTRACT_ADDRESS } from "../../../constants"
-import abi from "@/lib/FruitsBox.abi.json"
 import LoadingModal from '@/app//components/LoadingModal';
 import { IState, StateContextType } from '@/app/type/Contract'
 
 export const initState:IState = {
     currentAccount: null,
     messageValue: "",
-    list: [],
+    nftBalance: 0,
     loading: false
 }
 
@@ -21,7 +19,6 @@ const StateContext = createContext<StateContextType | null>({
 export function StateContextProvider({ children }:{children: React.ReactNode}) {
     const [state, setState] = useState<IState>(initState);
     const updateState = (state:IState) => {
-        console.log("updateState =>", state)
         setState(state)
     }
 

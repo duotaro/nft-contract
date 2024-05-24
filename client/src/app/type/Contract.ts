@@ -1,7 +1,7 @@
 export interface IState {
     currentAccount: string | null;
     messageValue: string;
-    list: string[];
+    nftBalance: number;
     loading: boolean;
 }
 

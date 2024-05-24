@@ -1,1 +1,2 @@
-export const FB_CONTRACT_ADDRESS = '0x428b774eCae5276F5a79b6a021D6016158c5629d'
+export const CONTRACT_ADDRESS = '0x2C141A5ED6847c221eA23EADDAD1C410Cbc1e4FC'
+export const TOKEN_URI = 'https://rxxniniqiiuzrtg3bss2aegtietm3np2viml73rolvmkd66u4nxa.arweave.net/je7UNRBCKZjM2wyloBDTQSbNtfqqGL_uLl1YofvU424'

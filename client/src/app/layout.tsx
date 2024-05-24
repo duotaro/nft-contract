@@ -6,8 +6,8 @@ import { StateContextProvider } from "@/app/provider/StateContextProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "1st DApp",
-  description: "dapp",
+  title: "NFT Contract",
+  description: "Let's create and mint an NFT smart contract.",
 };
 
 export default function RootLayout({
