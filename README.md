@@ -38,11 +38,42 @@ http://localhost:3000/ にアクセスして表示されるか確認
 今回みたいにclientの中だけをdeployってできるんかな？
 
 ## 課題
-次回作でやりたいところ
-ウォレットがない人を誘導する
-できればチェーンを指定して接続したい。今のままだとデフォルトでメインネットに接続されてしまう
+前回作からの課題
+#### ウォレットがない人を誘導する
+
+
+#### できればチェーンを指定して接続したい。今のままだとデフォルトでメインネットに接続されてしまう
 チェーンが違う場合にどうするか
-ユーザーごとに取得する内容などを変更したい（今回は一つのコントラクトでBOXという変数に全ユーザーがアクセスしている）
+→できた。
+```
+   　// BrowserProviderを使って現在のウォレットチェーンに接続（アプリから接続しても同じかな？）
+    const provider = new ethers.BrowserProvider(ethereum);
+    const signer = await provider.getSigner();
+
+    const network = await provider.getNetwork();
+    // chainIDで判断
+    if(!TARGET_CHAIN_ID_LIST.includes(Number(network.chainId))){
+        // 指定チェーン以外だったらswitch
+        await  switchNetwork(ethereum, TARGET_CHAIN_ID_LIST[0])
+    }
+
+    // チェーンswaitchする
+    async function switchNetwork(ethereum:any, chainId:number) {
+        await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainId }],    // chainId must be in HEX with 0x in front
+    });
+ }
+```
+
+次回作でやりたいところ
+
+#### ユーザーごとに取得する内容などを変更したい（今回は一つのコントラクトでBOXという変数に全ユーザーがアクセスしている）
+そもそもどういう時に使うか。
+トークンとかのスマコンと、それ以外では考え方が違うっぽい。
+ここはユーズケースを勉強しないとダメかも
+
+
 
 ### 学習メモ
 スマコン中心

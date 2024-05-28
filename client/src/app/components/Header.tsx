@@ -1,12 +1,18 @@
 import React from 'react';
 import { useStateContext } from '@/app/provider/StateContextProvider';
-
+import NotificationParam from "@/app/type/NotificationParam";
+import { NotificationType } from '../../../constants';
+var tmpState:any = null
 const Header = () => {
 
   const { state, updateState } = useStateContext();
 
   const setCurrentAccount = (account:(string | null)) => {
     updateState({...state, currentAccount: account})
+  }
+  const setNotification = (param:NotificationParam) => {
+    tmpState = { ...tmpState, showNotification: true, notificationParam: param }
+    updateState(tmpState)
   }
   
   /* ボタンのスタイルをまとめた変数 */
@@ -67,30 +73,21 @@ const Header = () => {
     }
   };
 
+  const notificationTest = (event: React.MouseEvent<HTMLDivElement>) => {
+    var param = new NotificationParam('completed', 'Minting process completed successfully.', '', false, 'Close', true, NotificationType.DENGER, () => {}, () => {})
+    setNotification(param)
+  }
 
   return (
-    <nav className="w-full sticky top-0 p-0.5 bg-slate-800">
+    <nav className="w-full sticky top-0 p-3 bg-slate-800">
         <div className="flex justify-between max-w-5xl mx-auto items-center">
-            <div className="flex items-center">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                >
-                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                    <path
-                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
-                    />
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
-                    />
+            <div className="flex items-center m-1" onClick={notificationTest}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" d="M0 0h24v24H0z"/>
+                  <path fill="#ffffff" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                  <path fill="#ffffff" d="M15.5 9c-.83 0-1.5.67-1.5 1.5S14.67 12 15.5 12s1.5-.67 1.5-1.5S16.33 9 15.5 9zm-7 0C7.67 9 7 9.67 7 10.5S7.67 12 8.5 12 10 11.33 10 10.5 9.33 9 8.5 9zm7 6c-1.45 0-2.73.73-3.5 1.84-.77-1.11-2.05-1.84-3.5-1.84s-2.73.73-3.5 1.84c-.77-1.11-2.05-1.84-3.5-1.84v2c1.45 0 2.73.73 3.5 1.84.77-1.11 2.05-1.84 3.5-1.84s2.73.73 3.5 1.84c.77-1.11 2.05-1.84 3.5-1.84v-2z"/>
                 </svg>
-                <h2 className="text-xl font-bold">NFT contract</h2>
+                <h2 className="text-xl font-bold m-2">NFT contract</h2>
             </div>
             <div className="">
                 <div className="lg:flex lg:items-center">
@@ -111,7 +108,7 @@ const Header = () => {
             title="DisConnect"
             className={`${buttonStyle} bg-indigo-900 text-white `}
           >
-            DisConnect ( {state.currentAccount} )
+            disconnect ( {state.currentAccount} )
           </button>
         )}
                 </div>

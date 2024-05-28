@@ -1,12 +1,13 @@
 "use client";
 import { ethers } from "ethers";
 import React, { useState, useEffect } from "react";
-import { CONTRACT_ADDRESS, TOKEN_URI, TARGET_CHAIN_ID_LIST } from "../../constants"
+import { CONTRACT_ADDRESS, TOKEN_URI, TARGET_CHAIN_ID_LIST, NotificationType } from "../../constants"
 import abi from "@/lib/MyNFT.abi.json"
-import { useStateContext } from '@/app/provider/StateContextProvider';
-import { initState } from '@/app/provider/StateContextProvider'
+import { useStateContext, initState } from '@/app/provider/StateContextProvider';
 import { IState } from '@/app/type/Contract'
 import { formatUnits } from "@ethersproject/units";
+import { isNumberObject } from "util/types";
+import NotificationParam from "./type/NotificationParam";
 /* ボタンのスタイルをまとめた変数 */
 const buttonStyle = "flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
@@ -16,7 +17,8 @@ var tmpState:IState = initState
 export default function Home() {
   
   const { state, updateState } = useStateContext();
-  const [limit, setLimit] = useState<number>(5);
+  const [limit, setLimit] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const contractAddress = CONTRACT_ADDRESS
   const contractABI = abi
@@ -40,8 +42,8 @@ export default function Home() {
     updateState(tmpState)
   }
 
-  const setMessageValue = (message:string) => {
-    tmpState = { ...tmpState, messageValue: message }
+  const setNotification = (param:NotificationParam) => {
+    tmpState = { ...tmpState, showNotification: true, notificationParam: param }
     updateState(tmpState)
   }
   const loadBalance = async () => {
@@ -82,10 +84,18 @@ export default function Home() {
 
   /* ABIを読み込み、コントラクトにEchoを書き込む */
   const mintNFT = async () => {
+    setError("")
     if(state.loading){
       return
     }
-    if(state.nftBalance >= limit){
+
+    const numberValue: number = Number(limit);
+    if (isNaN(numberValue)) {
+      setLimit('')
+      setError("数値を入力してください。")
+      return
+    }
+    if(state.nftBalance >= numberValue){
       alert(`mint可能数は${limit}つです。`)
       return
     }
@@ -114,6 +124,9 @@ export default function Home() {
         console.log("Mining...", echoTxn.hash);
         await echoTxn.wait();
         setLoading(false)
+
+        var param = new NotificationParam('completed', 'Minting process completed successfully.', '', false, 'Close', true, NotificationType.INFO, () => {}, () => {})
+        setNotification(param)
         loadBalance()
       } else {
         setLoading(false)
@@ -134,10 +147,20 @@ export default function Home() {
     }
   }, [state]);
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLimit(Number(e.target.value))
-    // ここで必要なイベントを発火させる
-    console.log('Input changed:', e.target.value);
+    setError("")
+
+    const inputValue: number = parseInt(e.target.value, 10)
+    if (!isNaN(inputValue)) {
+      // 数値に変換できた場合の処理
+      setLimit(inputValue.toString())
+    } else {
+      // 数値に変換できない場合の処理
+      setLimit('')
+      setError("数値を入力してください。")
+    }
+  
   };
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
@@ -148,17 +171,20 @@ export default function Home() {
           <label htmlFor="mintLimit" className="block text-sm font-medium leading-6 text-gray-900">mint上限数</label>
           <div className="mt-2">
             <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-              <input type="number" name="mintLimit" id="username" autoComplete="mintLimit" className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="5" value={limit}　onChange={handleChange}　/>
+              <input type="text" name="mintLimit" id="username" autoComplete="mintLimit" className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="5" value={limit} onChange={handleChange}/>
             </div>
+            {error && (
+              <p className="text-red-400">{error}</p>
+            )}
           </div>
         </div>
           <div className="py-3 px-4 block w-full rounded-lg">
             <div><img className="mx-auto border" src={TOKEN_URI} alt="" width="384" height="512"></img></div>
           </div>
           <button
-            className={`${buttonStyle} bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600 ${state.nftBalance >= limit ? 'cursor-not-allowed' : ''}`}
+            className={`${buttonStyle} bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600 ${state.nftBalance >= Number(limit) ? 'cursor-not-allowed' : ''}`}
             onClick={mintNFT}
-            disabled={state.nftBalance >= limit}
+            disabled={state.nftBalance >= Number(limit)}
           >
             Free Mint
           </button>
